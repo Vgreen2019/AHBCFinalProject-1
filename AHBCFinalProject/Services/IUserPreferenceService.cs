@@ -12,6 +12,6 @@ namespace AHBCFinalProject.Services
         UserPreferencesViewModel GetUserPreferencesFromId();
         void SetUserPreferences(UserPreferencesViewModel viewModel);
         UpdateUserViewModel GetUpdatedPreferenceView();
-        //void UpdateUserPreferences(UserPreferencesViewModel model);
+        void UpdateUserPreferences(UserPreferencesViewModel model);
     }
 }

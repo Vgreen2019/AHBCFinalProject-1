@@ -47,12 +47,13 @@ namespace AHBCFinalProject.Controllers
             return View("ConfirmUserPreferences", model);
         }
 
-        //public IActionResult ViewUserPreferences()
-        //{
-        //    var result = _userPreferenceService.GetUserPreferencesFromId();
-        //    //var result = _userPreferenceService.GetUserPreferencesFromId(viewModel.UserId);
-        //    return View(result);
-        //}
+        public IActionResult UpdateUserPreferences(UserPreferencesViewModel model)
+        {
+            _userPreferenceService.SetUserPreferences(model);
+            
+
+            return View("ConfirmUserPreferences", model);
+        }
 
         public IActionResult SearchMealPlanHistory()
         {

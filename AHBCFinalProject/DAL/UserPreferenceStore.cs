@@ -20,19 +20,19 @@ namespace AHBCFinalProject.DAL
             _userIdService = userIdService;
         }
 
-        public void CreateNewUserPrefEntry(int id)
-        {
-            var dalModel = new UserPreferenceDALModel();
-            dalModel.Id = id;
-            var sql = $@"INSERT INTO DietaryRestrictions (Id, Diet, Intolerances, ExcludedIngredients) 
-                            VALUES (@{nameof(dalModel.Id)}, @{nameof(dalModel.Diet)}, @{nameof(dalModel.Intolerances)}, @{nameof(dalModel.ExcludedIngredients)})";
+        //public void CreateNewUserPrefEntry(int id)
+        //{
+        //    var dalModel = new UserPreferenceDALModel();
+        //    dalModel.Id = id;
+        //    var sql = $@"INSERT INTO DietaryRestrictions (Id, Diet, Intolerances, ExcludedIngredients) 
+        //                    VALUES (@{nameof(dalModel.Id)}, @{nameof(dalModel.Diet)}, @{nameof(dalModel.Intolerances)}, @{nameof(dalModel.ExcludedIngredients)})";
 
-            using (var connection = new SqlConnection(_config.ConnectionString))
-            {
-                var results = connection.Execute(sql, dalModel);
+        //    using (var connection = new SqlConnection(_config.ConnectionString))
+        //    {
+        //        var results = connection.Execute(sql, dalModel);
                 
-            }
-        }
+        //    }
+        //}
 
         public bool InsertUserPreferences(UserPreferenceDALModel dalModel)
         {
@@ -60,44 +60,60 @@ namespace AHBCFinalProject.DAL
         }
 
         public bool UpdateUserPreferences(UserPreferenceDALModel dalModel)
-        {
-            var UserId = _userIdService.UserId;
-            bool success = false;
+        {            
+            var sql = $@"UPDATE DietaryRestrictions SET Diet = @{ nameof(dalModel.Diet)}, Intolerances = @{ nameof(dalModel.Intolerances)}, ExcludedIngredients = @{nameof(dalModel.ExcludedIngredients)} WHERE Id = @{ nameof(dalModel.Id)}";
 
-            if(dalModel.Diet != null && dalModel.Diet != "")
+            using (var connection = new SqlConnection(_config.ConnectionString))
             {
-                var sql = $@"UPDATE DietaryRestrictions SET Diet = " + $@"'{dalModel.Diet}'" + $" WHERE Id = {UserId}";
+                var result = connection.Execute(sql, dalModel);
 
-                using (var connection = new SqlConnection(_config.ConnectionString))
-                {
-                    var result = connection.Execute(sql, dalModel);
-                    success = true;
-                }
+               return true;
             }
 
-            if(dalModel.Intolerances != null && dalModel.Intolerances != "")
-            {
-                var sql = $@"UPDATE DietaryRestrictions SET Intolerances = " + $@"'{dalModel.Intolerances}'" + $" WHERE Id = {UserId}";
-      
-                using (var connection = new SqlConnection(_config.ConnectionString))
-                {
-                    var result = connection.Execute(sql, dalModel);
-                    success = true;
-                }
-            }
-
-            if (dalModel.ExcludedIngredients != null && dalModel.ExcludedIngredients != "")
-            {
-                var sql = $@"UPDATE DietaryRestrictions SET ExcludedIngredients = " + $@"'{dalModel.ExcludedIngredients}'" + $" WHERE Id = {UserId}";
-
-                using (var connection = new SqlConnection(_config.ConnectionString))
-                {
-                    var result = connection.Execute(sql, dalModel);
-                    success = true;
-                }
-            }
-
-            return success;
         }
+
+
+        //public bool UpdateUserPreferences(UserPreferenceDALModel dalModel)
+        //{
+        //    var UserId = _userIdService.UserId;
+        //    bool success = false;
+
+        //    if (dalModel.Diet != null && dalModel.Diet != "")
+        //    {
+        //        var sql = $@"UPDATE DietaryRestrictions SET Diet = @{ nameof(dalModel.Diet)} WHERE Id = @{ nameof(dalModel.Id)}";
+
+        //        using (var connection = new SqlConnection(_config.ConnectionString))
+        //        {
+        //            var result = connection.Execute(sql, dalModel);
+        //            success = true;
+        //        }
+        //    }
+
+        //    if (dalModel.Intolerances != null && dalModel.Intolerances != "")
+        //    {
+        //        var sql = $@"UPDATE DietaryRestrictions SET Diet = @{ nameof(dalModel.Intolerances)} WHERE Id = @{ nameof(dalModel.Id)}";
+
+        //        using (var connection = new SqlConnection(_config.ConnectionString))
+        //        {
+        //            var result = connection.Execute(sql, dalModel);
+        //            success = true;
+        //        }
+        //    }
+
+        //    if (dalModel.ExcludedIngredients != null && dalModel.ExcludedIngredients != "")
+        //    {
+        //        var sql = $@"UPDATE DietaryRestrictions SET Diet = @{ nameof(dalModel.ExcludedIngredients)} WHERE Id = @{ nameof(dalModel.Id)}";
+
+        //        using (var connection = new SqlConnection(_config.ConnectionString))
+        //        {
+        //            var result = connection.Execute(sql, dalModel);
+        //            success = true;
+        //        }
+        //    }
+
+        //    return success;
+        //}
+
+
     }
 }

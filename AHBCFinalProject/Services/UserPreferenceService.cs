@@ -11,16 +11,17 @@ namespace AHBCFinalProject.Services
     {
         private readonly IUserPreferenceStore _userPreferenceStore;
         private readonly IUserIdService _userIdService;
+        private readonly int UserID;
 
         public UserPreferenceService(IUserPreferenceStore userPreferenceStore, IUserIdService userIdService)
         {
             _userPreferenceStore = userPreferenceStore;
             _userIdService = userIdService;
+            UserID = _userIdService.UserId;
         }
 
         public UserPreferencesViewModel GetUserPreferencesFromId()
         {
-            var UserID = _userIdService.getUserId();
             var dalModel = _userPreferenceStore.SelectUserPreferences(UserID);
 
             string[] diet = { "" };
@@ -38,7 +39,7 @@ namespace AHBCFinalProject.Services
             }
             
             var viewModel = new UserPreferencesViewModel();
-            viewModel.UserId = UserID;
+            viewModel.UserId = UserID; //CHANGE BACK TO BLANK
 
             if (diet.Contains("Gluten Free"))
                 viewModel.GlutenFree = true;
@@ -91,7 +92,20 @@ namespace AHBCFinalProject.Services
 
         public void SetUserPreferences(UserPreferencesViewModel viewModel)
         {
-            var UserID = _userIdService.getUserId();
+            var dalModel = UPViewModelToDAL(viewModel);
+
+            _userPreferenceStore.InsertUserPreferences(dalModel);
+        }
+
+        public void UpdateUserPreferences(UserPreferencesViewModel viewModel)
+        {
+            var dalModel = UPViewModelToDAL(viewModel);
+
+            _userPreferenceStore.UpdateUserPreferences(dalModel);
+        }
+
+        private UserPreferenceDALModel UPViewModelToDAL(UserPreferencesViewModel viewModel)
+        {
             var dalModel = new UserPreferenceDALModel();
             var intolerances = new List<string>();
             var diets = new List<string>();
@@ -147,19 +161,17 @@ namespace AHBCFinalProject.Services
             dalModel.Diet = String.Join(",", diets);
             dalModel.Intolerances = String.Join(",", intolerances);
 
-            if(viewModel.ExcludedIngredients != null)
+            if (viewModel.ExcludedIngredients != null)
             {
                 dalModel.ExcludedIngredients = viewModel.ExcludedIngredients;
             }
 
-            _userPreferenceStore.InsertUserPreferences(dalModel);
-
-
+            return dalModel;
         }
 
+        //may need some revisions
         public UpdateUserViewModel GetUpdatedPreferenceView()
         {
-            var UserID = _userIdService.getUserId();
             var dalPreference = _userPreferenceStore.SelectUserPreferences(UserID);
             var updatedPreference = new UpdateUserViewModel()
             {
@@ -171,10 +183,6 @@ namespace AHBCFinalProject.Services
             return updatedPreference;
         }
 
-        //public void UpdateUserPreferences(UserPreferencesViewModel model)
-        //{
-        //    var dalModel = SetUserPreferences(model);
-        //    _userPreferenceStore.UpdateUserPreferences(dalModel);
-        //}
+       
     }
 }
